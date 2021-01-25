@@ -1,3 +1,9 @@
+import json
+
+
+JSON_FILE_NAME = "events.json"
+
+
 def get_events(filename):
     """Gets all events from given json file.
 
@@ -29,7 +35,7 @@ def get_specific_events(events, start, duration):
 
 
 def add_event(events, name, day, month):
-    """Add new event.
+    """Adds new event.
 
     Parameters:
     events (list): List of events
@@ -41,8 +47,14 @@ def add_event(events, name, day, month):
     list: List of events with new event
    """
 
-    # TODO - add event
-    return
+    event = {}
+    event_id = len(events) + 1
+    date_string = "%s-%s" % (day, month)
+    event["id"], event["name"], event["date"] = event_id, name, date_string
+    events.append(event)
+    events = __save_events(events, JSON_FILE_NAME)
+    print("New event was successfully added!")
+    return events
 
 
 def edit_event(events, event_id, selected, value):
@@ -75,3 +87,11 @@ def delete_event(events, event_id):
 
     # TODO - delete event
     return
+
+
+def __save_events(events, filename):
+    data = {}
+    data['events'] = events
+    with open(filename, 'w') as json_file:
+        json.dump(data, json_file)
+    return events
