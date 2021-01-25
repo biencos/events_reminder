@@ -5,6 +5,8 @@ import events
 def main():
     print("")
     print("INCOMING EVENTS")
+    # TODO - get all events
+    e = []
     # TODO - show incoming events
 
     ACTIONS = ['add event', 'edit event', 'delete event',
@@ -19,7 +21,9 @@ def main():
 
         if selected == 1:
             print("ADD NEW EVENT")
-            # TODO - add event
+            print("Enter values of new event")
+            n, d, m = input("Name: "), input("Day: "), input("Month: ")
+            e = events.add_event(e, n, d, m)
         if selected == 2:
             print("EDIT EVENT")
             # TODO - edit event
