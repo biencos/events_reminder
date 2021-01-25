@@ -14,8 +14,7 @@ def main():
         print("")
         print_actions(ACTIONS, "-")
         print("")
-        # TODO - get selected option
-        # selected = selected option
+        selected = get_selected_option(input(":"), 1, len(ACTIONS))
 
         if selected == 1:
             print("ADD NEW EVENT")
@@ -33,15 +32,25 @@ def main():
             print("ALL EVENTS")
             # TODO - show all events
 
-        # TODO - delete this lines after adding get selected option
-        break
-
     print('See you next time')
 
 
 def print_actions(actions, prfx):
     print("WHAT DO YOU WANT TO DO?")
     [print(f"{i+1} {prfx} {actions[i]}") for i in range(len(actions))]
+
+
+def get_selected_option(inp, inp_limit, inp_limit1):
+    try:
+        inp = int(inp)
+    except:
+        print(f"Option must be a number between {inp_limit} and {inp_limit1}")
+        sys.exit(0)
+
+    if inp < inp_limit or inp > inp_limit1:
+        print(f"Option must be a number between {inp_limit} and {inp_limit1}")
+        sys.exit(0)
+    return inp
 
 
 if __name__ == "__main__":
