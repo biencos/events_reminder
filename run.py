@@ -1,4 +1,5 @@
 import sys
+import events
 
 
 def main():
@@ -6,8 +7,8 @@ def main():
     print("INCOMING EVENTS")
     # TODO - show incoming events
 
-    ACTIONS = [
-        'add event', 'edit event', 'delete event', 'show incoming events',  'show all events', 'exit']
+    ACTIONS = ['add event', 'edit event', 'delete event',
+               'show incoming events',  'show all events', 'exit']
     selected = 1
 
     while 0 < selected < len(ACTIONS):
