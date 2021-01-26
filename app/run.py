@@ -5,11 +5,12 @@ JSON_FILE_NAME = "data/events.json"
 
 
 def main():
-    print("")
-    print("INCOMING EVENTS")
     e = Events(JSON_FILE_NAME)
     e.get_events()
     e.get_specific_events()
+
+    print("")
+    print("INCOMING EVENTS")
     print_events(e.specific_events)
 
     ACTIONS = ['add event', 'edit event', 'delete event',

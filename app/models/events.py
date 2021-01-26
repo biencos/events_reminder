@@ -25,41 +25,6 @@ class Events(object):
             cei = self.__get_closest_event_index(datetime.now())
             self.events = self.events[cei:] + self.events[0:cei]
 
-    def __get_closest_event_index(self, date):
-        """Gets index of event, from events, which is closest to given date.
-
-        Parameters:
-        date (datetime): date given by user
-
-        Returns:
-        int: index of event that is closest to given date
-        """
-        date_string = "%s-%s" % (date.day, date.month)
-        closest_event = min(
-            self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
-        return self.events.index(closest_event)
-
-    @staticmethod
-    def __count_dates_difference(date_string, date_string_1):
-        """Count difference between two dates given in string.
-
-        Parameters:
-        date_string (str): first date of type string
-        date_string_1 (str): second date of type string
-
-        Returns:
-        int: Difference, in days, beetween two dates  
-        """
-
-        date = datetime.strptime(date_string, '%d-%m')
-        date_1 = datetime.strptime(date_string_1, '%d-%m')
-
-        difference = (date_1 - date).days
-        if not difference < 0:
-            return difference
-        else:
-            return difference + 365
-
     def get_specific_events(self, start=0, duration=14):
         """Gets specific events from list of events.
 
@@ -116,13 +81,9 @@ class Events(object):
         """Modifies event with id the same as event_id.
 
         Parameters:
-        events (list): List of events
         event_id (int): Id of event that will be modified
         selected_attribute (str): Selected attribute of event
         value (int): New value of attribute
-
-        Returns:
-        list: Updated list of events
         """
 
         if event_id < 0 or event_id > len(self.events):
@@ -151,6 +112,42 @@ class Events(object):
             print("Event was successfully deleted!")
         else:
             print("There was an error during event deletion!")
+
+    # PRIVATE FUNCTIONS
+    def __get_closest_event_index(self, date):
+        """Gets index of event, from events, which is closest to given date.
+
+        Parameters:
+        date (datetime): date given by user
+
+        Returns:
+        int: index of event that is closest to given date
+        """
+        date_string = "%s-%s" % (date.day, date.month)
+        closest_event = min(
+            self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
+        return self.events.index(closest_event)
+
+    @staticmethod
+    def __count_dates_difference(date_string, date_string_1):
+        """Count difference between two dates given in string.
+
+        Parameters:
+        date_string (str): first date of type string
+        date_string_1 (str): second date of type string
+
+        Returns:
+        int: Difference, in days, beetween two dates  
+        """
+
+        date = datetime.strptime(date_string, '%d-%m')
+        date_1 = datetime.strptime(date_string_1, '%d-%m')
+
+        difference = (date_1 - date).days
+        if not difference < 0:
+            return difference
+        else:
+            return difference + 365
 
     def __save_events(self):
         """Saves event with id the same as event_id."""
