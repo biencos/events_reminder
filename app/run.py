@@ -29,12 +29,27 @@ def main():
             e.add_event(n, d, m)
         if selected == 2:
             print("EDIT EVENT")
-            # TODO - edit event
+            print("Enter id of event that You want to edit (or press 0 to exit)")
+            event_id = int(input("Id: "))
+            if event_id < 0 or event_id > len(e.events):
+                print("There is no event with such id!")
+            elif event_id == 0:
+                print("")
+            else:
+                EDIT_ACTIONS = ['name', 'day', 'month']
+                print_actions(EDIT_ACTIONS, "- to edit")
+                print("")
+                selected_e = get_selected_option(input(":"), 1, len(ACTIONS))
+                selected_attribute = EDIT_ACTIONS[selected_e - 1]
+                print(f"Enter new value of {selected_attribute}")
+                value = input(": ")
+                e.edit_event(event_id, selected_attribute, value)
+
         if selected == 3:
             print("DELETE EVENT")
             print("Enter id of event that needs to be deleted")
-            eid = int(input("Id: "))
-            e.delete_event(eid)
+            event_id = int(input("Id: "))
+            e.delete_event(event_id)
         if selected == 4:
             print("INCOMING EVENTS")
             e.get_specific_events()

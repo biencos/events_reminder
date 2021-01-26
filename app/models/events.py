@@ -112,21 +112,28 @@ class Events(object):
         self.file_manager.save_to_json_file(data)
         print("New event was successfully added!")
 
-    def edit_event(self, events, event_id, selected, value):
+    def edit_event(self, event_id, selected_attribute, value):
         """Modifies event with id the same as event_id.
 
         Parameters:
         events (list): List of events
         event_id (int): Id of event that will be modified
-        selected (str): Selected attribute of event
+        selected_attribute (str): Selected attribute of event
         value (int): New value of attribute
 
         Returns:
         list: Updated list of events
-    """
+        """
 
-        # TODO - edit event
-        return
+        if event_id < 0 or event_id > len(self.events):
+            print(f"There is no event with id {event_id}")
+            return
+
+        events_with_id = [e for e in self.events if e["id"] == event_id]
+        i = self.events.index(events_with_id[0])
+        self.events[i][selected_attribute] = value
+        self.__save_events()
+        print("Event was successfully edited!")
 
     def delete_event(self, event_id):
         """Deletes event with id the same as event_id.
