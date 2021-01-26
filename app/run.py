@@ -9,7 +9,6 @@ def main():
     print("INCOMING EVENTS")
     e = Events(JSON_FILE_NAME)
     e.get_events()
-    # print_events(e.events)
     e.get_specific_events()
     print_events(e.specific_events)
 
@@ -71,7 +70,7 @@ def print_events(events):
         for e in events:
             print(f'{e["id"]} - {e["date"]} - {e["name"]}')
     else:
-        print("You don't have any events yet!")
+        print("There is no events.")
 
 
 if __name__ == "__main__":
