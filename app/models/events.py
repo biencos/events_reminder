@@ -22,21 +22,21 @@ class Events(object):
         if len(self.events) > 0:
             self.events = sorted(
                 self.events, key=lambda e: datetime.strptime(e['date'], '%d-%m'))
-            cei = self.__get_closest_event_index()
+            cei = self.__get_closest_event_index(datetime.now())
             self.events = self.events[cei:] + self.events[0:cei]
 
-    def __get_closest_event_index(self):
-        """Gets index of event that is closest to today from events.
+    def __get_closest_event_index(self, date):
+        """Gets index of event, from events, which is closest to given date.
+
+        Parameters:
+        date (datetime): date given by user
 
         Returns:
-        int: index of event that is closest to today
+        int: index of event that is closest to given date
         """
-
-        today = datetime.now()
-        today_string = "%s-%s" % (today.day, today.month)
-
+        date_string = "%s-%s" % (date.day, date.month)
         closest_event = min(
-            self.events, key=lambda e: self.__count_dates_difference(today_string, e['date']))
+            self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
         return self.events.index(closest_event)
 
     @staticmethod
@@ -60,20 +60,32 @@ class Events(object):
         else:
             return difference + 365
 
-    def get_specific_events(self, events, start, duration):
+    def get_specific_events(self, start=0, duration=14):
         """Gets specific events from list of events.
 
         Parameters:
-        events (list): List of events
         start (int): How many days would be added to today
-        duration (int): From how many days (from start) should the events be get
-
-        Returns:
-        list: List of events
+        duration (int): How many days, from start, should the events be
         """
 
-        # TODO - get specific events
-        return
+        if not len(self.events) > 0:
+            self.specific_events = []
+            return
+
+        if not start <= duration:
+            print("Error! Incorrect values of arguments!")
+            self.specific_events = []
+            return
+
+        s_date = datetime.now() + timedelta(days=start)
+        si = self.__get_closest_event_index(s_date)
+        e_date = datetime.now() + timedelta(days=duration+1)
+        ei = self.__get_closest_event_index(e_date)
+
+        if si <= ei:
+            self.specific_events = self.events[si:ei]
+        else:
+            self.specific_events = self.events[si:] + self.events[0:ei]
 
     def add_event(self, name, day, month):
         """Adds new event.

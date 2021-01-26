@@ -9,8 +9,9 @@ def main():
     print("INCOMING EVENTS")
     e = Events(JSON_FILE_NAME)
     e.get_events()
-    print_events(e.events)
-    # TODO - show incoming events
+    # print_events(e.events)
+    e.get_specific_events()
+    print_events(e.specific_events)
 
     ACTIONS = ['add event', 'edit event', 'delete event',
                'show incoming events',  'show all events', 'exit']
@@ -37,7 +38,8 @@ def main():
             e.delete_event(eid)
         if selected == 4:
             print("INCOMING EVENTS")
-            # TODO - show incoming events
+            e.get_specific_events()
+            print_events(e.specific_events)
         if selected == 5:
             print("ALL EVENTS")
             e.get_events()
