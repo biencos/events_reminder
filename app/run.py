@@ -1,14 +1,15 @@
 import sys
 from models.events import Events
 
+JSON_FILE_NAME = "data/events.json"
+
 
 def main():
-    JSON_FILE_NAME = "data/events.json"
-    events = Events(JSON_FILE_NAME)
-
     print("")
     print("INCOMING EVENTS")
-    # TODO - get all events
+    e = Events(JSON_FILE_NAME)
+    e.get_events()
+    print_events(e.events)
     # TODO - show incoming events
 
     ACTIONS = ['add event', 'edit event', 'delete event',
@@ -25,7 +26,7 @@ def main():
             print("ADD NEW EVENT")
             print("Enter values of new event")
             n, d, m = input("Name: "), input("Day: "), input("Month: ")
-            events.add_event(n, d, m)
+            e.add_event(n, d, m)
         if selected == 2:
             print("EDIT EVENT")
             # TODO - edit event
@@ -37,7 +38,8 @@ def main():
             # TODO - show incoming events
         if selected == 5:
             print("ALL EVENTS")
-            # TODO - show all events
+            e.get_events()
+            print_events(e.events)
 
     print('See you next time')
 
@@ -58,6 +60,14 @@ def get_selected_option(inp, inp_limit, inp_limit1):
         print(f"Option must be a number between {inp_limit} and {inp_limit1}")
         sys.exit(0)
     return inp
+
+
+def print_events(events):
+    if len(events) > 0:
+        for e in events:
+            print(f'{e["id"]} - {e["date"]} - {e["name"]}')
+    else:
+        print("You don't have any events yet!")
 
 
 if __name__ == "__main__":
