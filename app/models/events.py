@@ -120,16 +120,21 @@ class Events(object):
         # TODO - edit event
         return
 
-    def delete_event(self, events, event_id):
+    def delete_event(self, event_id):
         """Deletes event with id the same as event_id.
 
         Parameters:
-        events (list): List of events
         event_id (int): Id of event that needs to be deleted
+        """
 
-        Returns:
-        list: Updated list of events
-    """
-
-        # TODO - delete event
-        return
+        events_with_id = [e for e in self.events if e["id"] == event_id]
+        if len(events_with_id) == 0:
+            print("There is no event with that id!")
+        elif len(events_with_id) == 1:
+            self.events.remove(events_with_id[0])
+            data = {}
+            data['events'] = self.events
+            self.file_manager.save_to_json_file(data)
+            print("Event was successfully deleted!")
+        else:
+            print("There was an error during event deletion!")
