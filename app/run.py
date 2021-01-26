@@ -32,7 +32,9 @@ def main():
             # TODO - edit event
         if selected == 3:
             print("DELETE EVENT")
-            # TODO - delete event
+            print("Enter id of event that needs to be deleted")
+            eid = int(input("Id: "))
+            e.delete_event(eid)
         if selected == 4:
             print("INCOMING EVENTS")
             # TODO - show incoming events

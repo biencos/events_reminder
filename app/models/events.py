@@ -15,19 +15,15 @@ class Events(object):
 
         if not self.file_manager.json_file_exists():
             self.events = []
-            data = {}
-            data['events'] = self.events
-            self.file_manager.save_to_json_file(data)
+            self.__save_events()
             return
 
-        self.events = self.file_manager.load_from_json_file('events')
-        if not len(self.events) > 0:
-            return
-
-        self.events = sorted(
-            self.events, key=lambda e: datetime.strptime(e['date'], '%d-%m'))
-        cei = self.__get_closest_event_index()
-        self.events = self.events[cei:] + self.events[0:cei]
+        self.events = self.__load_events()
+        if len(self.events) > 0:
+            self.events = sorted(
+                self.events, key=lambda e: datetime.strptime(e['date'], '%d-%m'))
+            cei = self.__get_closest_event_index()
+            self.events = self.events[cei:] + self.events[0:cei]
 
     def __get_closest_event_index(self):
         """Gets index of event that is closest to today from events.
@@ -132,9 +128,20 @@ class Events(object):
             print("There is no event with that id!")
         elif len(events_with_id) == 1:
             self.events.remove(events_with_id[0])
-            data = {}
-            data['events'] = self.events
-            self.file_manager.save_to_json_file(data)
+            self.__save_events()
             print("Event was successfully deleted!")
         else:
             print("There was an error during event deletion!")
+
+    def __save_events(self):
+        """Saves event with id the same as event_id."""
+
+        data = {}
+        data['events'] = self.events
+        self.file_manager.save_to_json_file(data)
+
+    def __load_events(self):
+        """Loads events from json file."""
+
+        events_attribute_name = 'events'
+        return self.file_manager.load_from_json_file(events_attribute_name)
