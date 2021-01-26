@@ -1,6 +1,8 @@
 import os
 from datetime import datetime, timedelta
 
+import uuid
+
 from .file_manager import FileManager
 
 
@@ -65,7 +67,7 @@ class Events(object):
         list: List of events with new event
         """
 
-        event_id = len(self.events) + 1
+        event_id = str(uuid.uuid4())[0:5]
         date_string = "%s-%s" % (day, month)
 
         event = {}
@@ -86,15 +88,16 @@ class Events(object):
         value (int): New value of attribute
         """
 
-        if event_id < 0 or event_id > len(self.events):
-            print(f"There is no event with id {event_id}")
-            return
-
         events_with_id = [e for e in self.events if e["id"] == event_id]
-        i = self.events.index(events_with_id[0])
-        self.events[i][selected_attribute] = value
-        self.__save_events()
-        print("Event was successfully edited!")
+        if len(events_with_id) == 0:
+            print("There is no event with that id!")
+        elif len(events_with_id) == 1:
+            i = self.events.index(events_with_id[0])
+            self.events[i][selected_attribute] = value
+            self.__save_events()
+            print("Event was successfully changed!")
+        else:
+            print("There was an error during editing!")
 
     def delete_event(self, event_id):
         """Deletes event with id the same as event_id.
