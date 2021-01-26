@@ -78,9 +78,9 @@ class Events(object):
             return
 
         s_date = datetime.now() + timedelta(days=start)
-        si = self.__get_closest_event_index()
+        si = self.__get_closest_event_index(s_date)
         e_date = datetime.now() + timedelta(days=duration+1)
-        ei = self.__get_closest_event_index()
+        ei = self.__get_closest_event_index(e_date)
 
         if si <= ei:
             self.specific_events = self.events[si:ei]
