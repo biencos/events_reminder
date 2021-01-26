@@ -1,12 +1,14 @@
 import sys
-import events
+from models.events import Events
 
 
 def main():
+    JSON_FILE_NAME = "data/events.json"
+    events = Events(JSON_FILE_NAME)
+
     print("")
     print("INCOMING EVENTS")
     # TODO - get all events
-    e = []
     # TODO - show incoming events
 
     ACTIONS = ['add event', 'edit event', 'delete event',
@@ -23,7 +25,7 @@ def main():
             print("ADD NEW EVENT")
             print("Enter values of new event")
             n, d, m = input("Name: "), input("Day: "), input("Month: ")
-            e = events.add_event(e, n, d, m)
+            events.add_event(n, d, m)
         if selected == 2:
             print("EDIT EVENT")
             # TODO - edit event
