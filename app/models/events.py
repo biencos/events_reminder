@@ -1,3 +1,6 @@
+import os
+from datetime import datetime, timedelta
+
 from .file_manager import FileManager
 
 
@@ -7,18 +10,59 @@ class Events(object):
         self.events = []
         self.specific_events = []
 
-    def get_events(self, filename):
-        """Gets all events from given json file.
+    def get_events(self):
+        """Gets all events and organizes them from today to yesterday (today-1)."""
 
-        Parameters:
-        filename (str): Name of json file with events
+        if not self.file_manager.json_file_exists():
+            self.events = []
+            data = {}
+            data['events'] = self.events
+            self.file_manager.save_to_json_file(data)
+            return
+
+        self.events = self.file_manager.load_from_json_file('events')
+        if not len(self.events) > 0:
+            return
+
+        self.events = sorted(
+            self.events, key=lambda e: datetime.strptime(e['date'], '%d-%m'))
+        cei = self.__get_closest_event_index()
+        self.events = self.events[cei:] + self.events[0:cei]
+
+    def __get_closest_event_index(self):
+        """Gets index of event that is closest to today from events.
 
         Returns:
-        list: List of events
+        int: index of event that is closest to today
         """
 
-        # TODO - get all events
-        return
+        today = datetime.now()
+        today_string = "%s-%s" % (today.day, today.month)
+
+        closest_event = min(
+            self.events, key=lambda e: self.__count_dates_difference(today_string, e['date']))
+        return self.events.index(closest_event)
+
+    @staticmethod
+    def __count_dates_difference(date_string, date_string_1):
+        """Count difference between two dates given in string.
+
+        Parameters:
+        date_string (str): first date of type string
+        date_string_1 (str): second date of type string
+
+        Returns:
+        int: Difference, in days, beetween two dates  
+        """
+
+        date = datetime.strptime(date_string, '%d-%m')
+        date_1 = datetime.strptime(date_string_1, '%d-%m')
+
+        difference = (date_1 - date).days
+        if not difference < 0:
+            return difference
+        else:
+            return difference + 365
 
     def get_specific_events(self, events, start, duration):
         """Gets specific events from list of events.
@@ -30,7 +74,7 @@ class Events(object):
 
         Returns:
         list: List of events
-    """
+        """
 
         # TODO - get specific events
         return
@@ -48,19 +92,16 @@ class Events(object):
         list: List of events with new event
         """
 
-        events = self.events
-        event_id = len(events) + 1
+        event_id = len(self.events) + 1
         date_string = "%s-%s" % (day, month)
 
         event = {}
         event["id"], event["name"], event["date"] = event_id, name, date_string
-        events.append(event)
+        self.events.append(event)
 
         data = {}
-        data['events'] = events
+        data['events'] = self.events
         self.file_manager.save_to_json_file(data)
-
-        self.events = events
         print("New event was successfully added!")
 
     def edit_event(self, events, event_id, selected, value):
