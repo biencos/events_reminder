@@ -41,12 +41,10 @@ def main():
             e.add_event(n, d, m)
         if selected == 2:
             print(f"{HA}EDIT EVENT")
-            print(f"{SA}Enter id of event that You want to edit (or press 0 to exit)")
-            event_id = int(input("Id: "))
-            if event_id < 0 or event_id > len(e.events):
+            print(f"{SA}Enter id of event that You want to edit")
+            event_id = input("Id: ")
+            if len(event_id) != 5:
                 print(f"{TA}There is no event with such id!")
-            elif event_id == 0:
-                print("")
             else:
                 EDIT_ACTIONS = ['name', 'day', 'month']
                 print_actions(EDIT_ACTIONS, "- to edit")
@@ -61,9 +59,12 @@ def main():
         if selected == 3:
             print(f"{HA}DELETE EVENT")
             print(f"{SA}Enter id of event that needs to be deleted")
-            event_id = int(input("Id: "))
+            event_id = input("Id: ")
             print("")
-            e.delete_event(event_id)
+            if len(event_id) == 5:
+                e.delete_event(event_id)
+            else:
+                print(f"{TA}There is no event with such id!")
         if selected == 4:
             print(f"{HA}INCOMING EVENTS")
             print("")
@@ -97,12 +98,24 @@ def get_selected_option(inp, inp_limit, inp_limit1):
     return inp
 
 
+def is_valid(inp, inp_limit, inp_limit1):
+    try:
+        inp = int(inp)
+    except:
+        print(f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
+        sys.exit(0)
+
+    if inp < inp_limit or inp > inp_limit1:
+        print(f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
+        sys.exit(0)
+    return inp
+
+
 def print_events(events):
     if len(events) > 0:
         for e in events:
             print(f'{SA}{e["id"]} - {e["date"]} - {e["name"]}')
     else:
-        print("")
         print(f"{HA}There is no events.")
 
 
