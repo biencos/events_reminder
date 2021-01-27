@@ -102,21 +102,6 @@ def get_selected_option(inp, inp_limit, inp_limit1):
     return inp
 
 
-def is_valid(inp, inp_limit, inp_limit1):
-    try:
-        inp = int(inp)
-    except:
-        cm.printRed(
-            f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
-        sys.exit(0)
-
-    if inp < inp_limit or inp > inp_limit1:
-        cm.printRed(
-            f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
-        sys.exit(0)
-    return inp
-
-
 def print_events(events):
     if len(events) > 0:
         for e in events:
