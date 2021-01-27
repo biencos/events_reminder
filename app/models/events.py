@@ -58,13 +58,9 @@ class Events(object):
         """Adds new event.
 
         Parameters:
-        events (list): List of events
         name (str): Name of the new event 
         day (int): Day in which the new event is happening
         month (int): Month in which the new event is happening
-
-        Returns:
-        list: List of events with new event
         """
 
         event_id = str(uuid.uuid4())[0:5]
