@@ -23,7 +23,7 @@ class Events(object):
         self.events = self.__load_events()
         if len(self.events) > 0:
             self.events = sorted(
-                self.events, key=lambda e: datetime.strptime(e['date'], '%d-%m'))
+                self.events, key=lambda e: datetime.strptime(e['date'], '%d.%m'))
             cei = self.__get_closest_event_index(datetime.now())
             self.events = self.events[cei:] + self.events[0:cei]
 
@@ -68,7 +68,7 @@ class Events(object):
         """
 
         event_id = str(uuid.uuid4())[0:5]
-        date_string = "%s-%s" % (day, month)
+        date_string = "%s.%s" % (day, month)
 
         event = {}
         event["id"], event["name"], event["date"] = event_id, name, date_string
@@ -126,7 +126,7 @@ class Events(object):
         Returns:
         int: index of event that is closest to given date
         """
-        date_string = "%s-%s" % (date.day, date.month)
+        date_string = "%s.%s" % (date.day, date.month)
         closest_event = min(
             self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
         return self.events.index(closest_event)
@@ -143,8 +143,8 @@ class Events(object):
         int: Difference, in days, beetween two dates  
         """
 
-        date = datetime.strptime(date_string, '%d-%m')
-        date_1 = datetime.strptime(date_string_1, '%d-%m')
+        date = datetime.strptime(date_string, '%d.%m')
+        date_1 = datetime.strptime(date_string_1, '%d.%m')
 
         difference = (date_1 - date).days
         if not difference < 0:

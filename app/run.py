@@ -105,9 +105,7 @@ def get_selected_option(inp, inp_limit, inp_limit1):
 def print_events(events):
     if len(events) > 0:
         for e in events:
-            date = e["date"].split("-")
-            day, month = date[0], date[1]
-            cm.printGreen(f'{SA}* {e["name"]}\t({day}.{month})\t[{e["id"]}]')
+            cm.printGreen(f'{SA}* {e["name"]}\t({e["date"]})\t[{e["id"]}]')
     else:
         cm.printRed(f"{HA}There is no events.")
 
