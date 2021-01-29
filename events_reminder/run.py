@@ -2,12 +2,13 @@ import sys
 
 from models.events import Events
 import models.colors_manager as cm
+import models.validation as v
 
 
 # Configurations
-HA = "\t\t\t"        # HEADER_ACAPIT
-SA = "\t\t"       # SUBHEADER_ACAPIT
-TA = "\t"              # TEXT_ACAPIT
+HA = "\t\t\t"       # HEADER_ACAPIT
+SA = "\t\t"         # SUBHEADER_ACAPIT
+TA = "\t"           # TEXT_ACAPIT
 
 JSON_FILE_NAME = "data/events.json"
 
@@ -22,10 +23,17 @@ def main():
     print("")
     print_events(e.specific_events)
 
+    print("")
+    cm.printPurple(f"{SA}Press 1 to launch main menu")
+    selected = input(":")
+    if not v.is_option_valid(selected, 1, 1):
+        selected = -1
+    selected = int(selected)
+    if not selected == 1:
+        selected = -1
+
     ACTIONS = ['add event', 'edit event', 'delete event',
                'show incoming events',  'show all events', 'exit']
-    selected = 1
-
     while 0 < selected < len(ACTIONS):
         print("")
         print("")
@@ -37,9 +45,17 @@ def main():
         if selected == 1:
             cm.printBlue(f"{HA}ADD NEW EVENT")
             print(f"{SA}Enter values of new event")
-            n, d, m = input("Name: "), input("Day: "), input("Month: ")
+            name = input("Name: ")
+            if not v.is_name_valid(name):
+                cm.printRed(f"{TA}Name can only contain alphabets and spaces!")
+                sys.exit(0)
+            d, m, y = input("Day: "), input("Month: "), input("Year: ")
+            if not v.is_date_valid(d, m, y):
+                cm.printRed(f"{TA}This date doesn't exists!")
+                sys.exit(0)
+            e.add_event(name, d, m)
             print("")
-            e.add_event(n, d, m)
+
         if selected == 2:
             cm.printBlue(f"{HA}EDIT EVENT")
             cm.printCyan(f"{SA}Enter id of event that You want to edit")
@@ -77,6 +93,7 @@ def main():
             e.get_events()
             print_events(e.events)
 
+    print("")
     cm.printYellow(f"{SA}See you next time")
 
 
@@ -88,18 +105,11 @@ def print_actions(actions, prfx):
 
 
 def get_selected_option(inp, inp_limit, inp_limit1):
-    try:
-        inp = int(inp)
-    except:
+    if not v.is_option_valid(inp, inp_limit, inp_limit1):
         cm.printRed(
             f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
         sys.exit(0)
-
-    if inp < inp_limit or inp > inp_limit1:
-        cm.printRed(
-            f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
-        sys.exit(0)
-    return inp
+    return int(inp)
 
 
 def print_events(events):
