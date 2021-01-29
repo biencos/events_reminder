@@ -97,18 +97,11 @@ def print_actions(actions, prfx):
 
 
 def get_selected_option(inp, inp_limit, inp_limit1):
-    try:
-        inp = int(inp)
-    except:
+    if not v.is_option_valid(inp, inp_limit, inp_limit1):
         cm.printRed(
             f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
         sys.exit(0)
-
-    if inp < inp_limit or inp > inp_limit1:
-        cm.printRed(
-            f"{TA}Option must be a number between {inp_limit} and {inp_limit1}")
-        sys.exit(0)
-    return inp
+    return int(inp)
 
 
 def print_events(events):
