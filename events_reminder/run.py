@@ -2,6 +2,7 @@ import sys
 
 from models.events import Events
 import models.colors_manager as cm
+import models.validation as v
 
 
 # Configurations
@@ -37,9 +38,17 @@ def main():
         if selected == 1:
             cm.printBlue(f"{HA}ADD NEW EVENT")
             print(f"{SA}Enter values of new event")
-            n, d, m = input("Name: "), input("Day: "), input("Month: ")
+            name = input("Name: ")
+            if not v.is_name_valid(name):
+                cm.printRed(f"{TA}Name can only contain alphabets and spaces!")
+                sys.exit(0)
+            d, m, y = input("Day: "), input("Month: "), input("Year: ")
+            if not v.is_date_valid(d, m, y):
+                cm.printRed(f"{TA}This date doesn't exists!")
+                sys.exit(0)
+            e.add_event(name, d, m)
             print("")
-            e.add_event(n, d, m)
+
         if selected == 2:
             cm.printBlue(f"{HA}EDIT EVENT")
             cm.printCyan(f"{SA}Enter id of event that You want to edit")
