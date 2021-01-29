@@ -8,9 +8,15 @@ def is_name_valid(name):
     return False
 
 
-def is_date_valid(day, month, year):
+def is_date_valid(d, m, y):
     try:
-        d = datetime(year=year, month=month, day=day)
+        d = int(d)
+        m = int(m)
+        y = int(y)
+    except:
+        return False
+    try:
+        d = datetime(year=y, month=m, day=d)
         return True
     except:
         return False
