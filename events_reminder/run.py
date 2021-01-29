@@ -6,9 +6,9 @@ import models.validation as v
 
 
 # Configurations
-HA = "\t\t\t"        # HEADER_ACAPIT
-SA = "\t\t"       # SUBHEADER_ACAPIT
-TA = "\t"              # TEXT_ACAPIT
+HA = "\t\t\t"       # HEADER_ACAPIT
+SA = "\t\t"         # SUBHEADER_ACAPIT
+TA = "\t"           # TEXT_ACAPIT
 
 JSON_FILE_NAME = "data/events.json"
 
@@ -23,10 +23,17 @@ def main():
     print("")
     print_events(e.specific_events)
 
+    print("")
+    cm.printPurple(f"{SA}Press 1 to launch main menu")
+    selected = input(":")
+    if not v.is_option_valid(selected, 1, 1):
+        selected = -1
+    selected = int(selected)
+    if not selected == 1:
+        selected = -1
+
     ACTIONS = ['add event', 'edit event', 'delete event',
                'show incoming events',  'show all events', 'exit']
-    selected = 1
-
     while 0 < selected < len(ACTIONS):
         print("")
         print("")
@@ -86,6 +93,7 @@ def main():
             e.get_events()
             print_events(e.events)
 
+    print("")
     cm.printYellow(f"{SA}See you next time")
 
 
