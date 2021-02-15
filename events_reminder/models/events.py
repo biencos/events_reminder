@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import uuid
 
 from .file_manager import FileManager
+from .validation import file_exists
 
 
 class Events(object):
@@ -13,9 +14,7 @@ class Events(object):
         self.specific_events = []
 
     def get_events(self):
-        """Gets all events and organizes them from today to yesterday (today-1)."""
-
-        if not self.file_manager.json_file_exists():
+        if not file_exists(self.file_manager.filename):
             self.events = []
             self.__save_events()
             return
@@ -28,13 +27,6 @@ class Events(object):
             self.events = self.events[cei:] + self.events[0:cei]
 
     def get_specific_events(self, start=0, duration=14):
-        """Gets specific events from list of events.
-
-        Parameters:
-        start (int): How many days would be added to today
-        duration (int): How many days, from start, should the events be
-        """
-
         if not len(self.events) > 0:
             self.specific_events = []
             return
@@ -54,20 +46,13 @@ class Events(object):
         else:
             self.specific_events = self.events[si:] + self.events[0:ei]
 
-    def add_event(self, name, day, month):
-        """Adds new event.
-
-        Parameters:
-        name (str): Name of the new event 
-        day (int): Day in which the new event is happening
-        month (int): Month in which the new event is happening
-        """
-
+    def add_event(self, name, day, month, year):
         event_id = str(uuid.uuid4())[0:5]
         date_string = "%s.%s" % (day, month)
 
         event = {}
-        event["id"], event["name"], event["date"] = event_id, name, date_string
+        event["id"], event["name"] = event_id, name
+        event["date"], event["year"] = date_string, year
         self.events.append(event)
 
         data = {}
@@ -76,14 +61,6 @@ class Events(object):
         print("New event was successfully added!")
 
     def edit_event(self, event_id, selected_attribute, value):
-        """Modifies event with id the same as event_id.
-
-        Parameters:
-        event_id (int): Id of event that will be modified
-        selected_attribute (str): Selected attribute of event
-        value (int): New value of attribute
-        """
-
         events_with_id = [e for e in self.events if e["id"] == event_id]
         if len(events_with_id) == 0:
             print("There is no event with that id!")
@@ -96,12 +73,6 @@ class Events(object):
             print("There was an error during editing!")
 
     def delete_event(self, event_id):
-        """Deletes event with id the same as event_id.
-
-        Parameters:
-        event_id (int): Id of event that needs to be deleted
-        """
-
         events_with_id = [e for e in self.events if e["id"] == event_id]
         if len(events_with_id) == 0:
             print("There is no event with that id!")
@@ -112,33 +83,8 @@ class Events(object):
         else:
             print("There was an error during event deletion!")
 
-    # PRIVATE FUNCTIONS
-    def __get_closest_event_index(self, date):
-        """Gets index of event, from events, which is closest to given date.
-
-        Parameters:
-        date (datetime): date given by user
-
-        Returns:
-        int: index of event that is closest to given date
-        """
-        date_string = "%s.%s" % (date.day, date.month)
-        closest_event = min(
-            self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
-        return self.events.index(closest_event)
-
     @staticmethod
     def __count_dates_difference(date_string, date_string_1):
-        """Count difference between two dates given in string.
-
-        Parameters:
-        date_string (str): first date of type string
-        date_string_1 (str): second date of type string
-
-        Returns:
-        int: Difference, in days, beetween two dates  
-        """
-
         date = datetime.strptime(date_string, '%d.%m')
         date_1 = datetime.strptime(date_string_1, '%d.%m')
 
@@ -148,15 +94,37 @@ class Events(object):
         else:
             return difference + 365
 
-    def __save_events(self):
-        """Saves event with id the same as event_id."""
+    def __get_closest_event_index(self, date):
+        date_string = "%s.%s" % (date.day, date.month)
+        closest_event = min(
+            self.events, key=lambda e: self.__count_dates_difference(date_string, e['date']))
+        return self.events.index(closest_event)
 
+    def __save_events(self):
         data = {}
         data['events'] = self.events
         self.file_manager.save_to_json_file(data)
 
     def __load_events(self):
-        """Loads events from json file."""
-
         events_attribute_name = 'events'
         return self.file_manager.load_from_json_file(events_attribute_name)
+
+    def load_events_from_txt_file(self, filename):
+        if not file_exists(filename):
+            return []
+
+        lines = self.file_manager.load_lines_from_txt_file(filename)
+        names = lines[::3]
+        dates = lines[1::3]
+
+        if not len(names) == len(dates):
+            return []
+        
+        for i in range(len(names)):
+            name = names[i].rstrip("\n")
+            sd = dates[i].rstrip("\n").split(".")
+            day, month, year = sd[0], sd[1], sd[2] 
+            self.add_event(name, day, month, year)
+
+        self.__save_events()
+        return self.events

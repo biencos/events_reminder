@@ -1,6 +1,9 @@
+import os
 import re
 from datetime import datetime
 
+def file_exists(filename):
+    return os.path.isfile(filename)
 
 def is_name_valid(name):
     if re.match('[a-zA-Z\s]+$', name):
