@@ -58,7 +58,6 @@ class Events(object):
         data = {}
         data['events'] = self.events
         self.file_manager.save_to_json_file(data)
-        print("New event was successfully added!")
 
     def edit_event(self, event_id, selected_attribute, value):
         events_with_id = [e for e in self.events if e["id"] == event_id]
@@ -119,11 +118,11 @@ class Events(object):
 
         if not len(names) == len(dates):
             return []
-        
+
         for i in range(len(names)):
             name = names[i].rstrip("\n")
             sd = dates[i].rstrip("\n").split(".")
-            day, month, year = sd[0], sd[1], sd[2] 
+            day, month, year = sd[0], sd[1], sd[2]
             self.add_event(name, day, month, year)
 
         self.__save_events()

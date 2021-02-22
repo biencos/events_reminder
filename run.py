@@ -13,7 +13,7 @@ TA = "\t"           # TEXT_ACAPIT
 
 APP_NAME = "Remi"
 PATH_TO_JSON_FILE_WITH_EVENTS = "remi/data/events.json"
-
+PATH_TO_TXT_FILE_WITH_EVENTS = "remi/data/events.txt"
 
 def main():
     e = Events(PATH_TO_JSON_FILE_WITH_EVENTS)
@@ -57,6 +57,7 @@ def main():
                 cm.printRed(f"{TA}This date doesn't exists!")
                 sys.exit(0)
             e.add_event(name, d, m, y)
+            cm.printBlue(f"{TA} New event was successfully added!")
             print("")
 
         if selected == 2:
@@ -97,13 +98,13 @@ def main():
             print_events(e.events)
         if selected == 6:
             cm.printBlue(f"{HA}LOAD EVENTS FROM FILE")
-            print(f"{SA}Enter name of txt file with events")
-            filename = input("File Name: ")
-            events = e.load_events_from_txt_file(filename)
+            print(f"{SA} Events will be loaded from {PATH_TO_TXT_FILE_WITH_EVENTS}")
+            events = e.load_events_from_txt_file(PATH_TO_TXT_FILE_WITH_EVENTS)
             if len(events) == 0:
-                cm.printRed(f"{TA} There is no file with that name!")
+                cm.printRed(f"{TA} There was an error with txt events file!")
                 sys.exit(0)
             cm.printBlue(f"{TA} New events were successfully added!")
+            print("")
 
     print("")
     cm.printYellow(f"{SA}See you next time")
