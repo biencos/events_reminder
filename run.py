@@ -1,9 +1,9 @@
 import sys
 from datetime import datetime
 
-from models.events import Events
-import models.colors_manager as cm
-import models.validation as v
+import events_reminder.models.colors_manager as cm
+import events_reminder.models.validation as v
+from events_reminder.models.events import Events
 
 
 # Configurations
@@ -11,7 +11,7 @@ HA = "\t\t\t"       # HEADER_ACAPIT
 SA = "\t\t"         # SUBHEADER_ACAPIT
 TA = "\t"           # TEXT_ACAPIT
 
-JSON_FILE_NAME = "data/events.json"
+JSON_FILE_NAME = "events_reminder/data/events.json"
 
 
 def main():
