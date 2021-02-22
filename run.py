@@ -1,8 +1,9 @@
 import sys
+from datetime import datetime
 
-from models.events import Events
-import models.colors_manager as cm
-import models.validation as v
+import remi.models.colors_manager as cm
+import remi.models.validation as v
+from remi.models.events import Events
 
 
 # Configurations
@@ -10,15 +11,17 @@ HA = "\t\t\t"       # HEADER_ACAPIT
 SA = "\t\t"         # SUBHEADER_ACAPIT
 TA = "\t"           # TEXT_ACAPIT
 
-JSON_FILE_NAME = "data/events.json"
-
+APP_NAME = "Remi"
+PATH_TO_JSON_FILE_WITH_EVENTS = "remi/data/events.json"
+PATH_TO_TXT_FILE_WITH_EVENTS = "remi/data/events.txt"
 
 def main():
-    e = Events(JSON_FILE_NAME)
+    e = Events(PATH_TO_JSON_FILE_WITH_EVENTS)
     e.get_events()
     e.get_specific_events()
 
     print("")
+    cm.printBlue(f"{HA}\t{APP_NAME}")
     cm.printBlue(f"{HA}INCOMING EVENTS")
     print("")
     print_events(e.specific_events)
@@ -33,7 +36,7 @@ def main():
         selected = -1
 
     ACTIONS = ['add event', 'edit event', 'delete event',
-               'show incoming events',  'show all events', 'exit']
+               'show incoming events',  'show all events', 'load events from file', 'exit']
     while 0 < selected < len(ACTIONS):
         print("")
         print("")
@@ -53,7 +56,8 @@ def main():
             if not v.is_date_valid(d, m, y):
                 cm.printRed(f"{TA}This date doesn't exists!")
                 sys.exit(0)
-            e.add_event(name, d, m)
+            e.add_event(name, d, m, y)
+            cm.printBlue(f"{TA} New event was successfully added!")
             print("")
 
         if selected == 2:
@@ -63,7 +67,7 @@ def main():
             if len(event_id) != 5:
                 cm.printRed(f"{TA}There is no event with such id!")
             else:
-                EDIT_ACTIONS = ['name', 'day', 'month']
+                EDIT_ACTIONS = ['name', 'day', 'month', 'year']
                 print_actions(EDIT_ACTIONS, "- to edit")
                 print("")
                 selected_e = get_selected_option(input(":"), 1, len(ACTIONS))
@@ -92,6 +96,15 @@ def main():
             print("")
             e.get_events()
             print_events(e.events)
+        if selected == 6:
+            cm.printBlue(f"{HA}LOAD EVENTS FROM FILE")
+            print(f"{SA} Events will be loaded from {PATH_TO_TXT_FILE_WITH_EVENTS}")
+            events = e.load_events_from_txt_file(PATH_TO_TXT_FILE_WITH_EVENTS)
+            if len(events) == 0:
+                cm.printRed(f"{TA} There was an error with txt events file!")
+                sys.exit(0)
+            cm.printBlue(f"{TA} New events were successfully added!")
+            print("")
 
     print("")
     cm.printYellow(f"{SA}See you next time")
@@ -115,7 +128,10 @@ def get_selected_option(inp, inp_limit, inp_limit1):
 def print_events(events):
     if len(events) > 0:
         for e in events:
-            cm.printGreen(f'{SA}* {e["name"]}\t({e["date"]})\t[{e["id"]}]')
+            which_event = datetime.now().year - \
+                int(e["year"]) if "year" in e else ""
+            cm.printGreen(
+                f'{SA}* {which_event} {e["name"]}\t({e["date"]})\t[{e["id"]}]')
     else:
         cm.printRed(f"{HA}There is no events.")
 
