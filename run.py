@@ -1,9 +1,9 @@
 import sys
 from datetime import datetime
 
-import events_reminder.models.colors_manager as cm
-import events_reminder.models.validation as v
-from events_reminder.models.events import Events
+import remi.models.colors_manager as cm
+import remi.models.validation as v
+from remi.models.events import Events
 
 
 # Configurations
@@ -11,15 +11,17 @@ HA = "\t\t\t"       # HEADER_ACAPIT
 SA = "\t\t"         # SUBHEADER_ACAPIT
 TA = "\t"           # TEXT_ACAPIT
 
-JSON_FILE_NAME = "events_reminder/data/events.json"
+APP_NAME = "Remi"
+PATH_TO_JSON_FILE_WITH_EVENTS = "remi/data/events.json"
 
 
 def main():
-    e = Events(JSON_FILE_NAME)
+    e = Events(PATH_TO_JSON_FILE_WITH_EVENTS)
     e.get_events()
     e.get_specific_events()
 
     print("")
+    cm.printBlue(f"{HA}\t{APP_NAME}")
     cm.printBlue(f"{HA}INCOMING EVENTS")
     print("")
     print_events(e.specific_events)
@@ -125,8 +127,10 @@ def get_selected_option(inp, inp_limit, inp_limit1):
 def print_events(events):
     if len(events) > 0:
         for e in events:
-            which_event = datetime.now().year - int(e["year"]) if "year" in e else "" 
-            cm.printGreen(f'{SA}* {which_event} {e["name"]}\t({e["date"]})\t[{e["id"]}]')
+            which_event = datetime.now().year - \
+                int(e["year"]) if "year" in e else ""
+            cm.printGreen(
+                f'{SA}* {which_event} {e["name"]}\t({e["date"]})\t[{e["id"]}]')
     else:
         cm.printRed(f"{HA}There is no events.")
 
